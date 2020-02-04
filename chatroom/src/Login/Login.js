@@ -6,6 +6,7 @@ import {
     Button,
     Checkbox,
 } from 'antd'
+import axios from 'axios'
 
 import './Login.css'
 
@@ -17,7 +18,12 @@ class Login extends React.Component {
         if (!err) {
           console.log('Received values of form: ', values);
           const {username, password} = values;
-          console.log(username, password)
+          console.log(username, password);
+          axios.post('/login', {username, password})
+          .then(res => {
+            console.log(res);
+            console.log(res.data);
+          })
         }
       });
     };

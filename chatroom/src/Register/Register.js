@@ -2,9 +2,10 @@ import React from 'react'
 import {
     Form,
     Input,
-    Checkbox,
+    Alert,
     Button,
 } from 'antd';
+import axios from 'axios'
 
 import './Register.css'
 
@@ -12,13 +13,33 @@ class RegistrationForm extends React.Component {
     state = {
         confirmDirty: false,
         autoCompleteResult: [],
+        username: '',
+        _id: '',
+        errorMsg: ''
     };
 
     handleSubmit = e => {
         e.preventDefault();
         this.props.form.validateFieldsAndScroll((err, values) => {
+            const { username, password } = values
+            console.log(values)
             if (!err) {
-                console.log('Received values of form: ', values);
+                axios.post('/register', { username, password })
+                    .then(res => {
+                        const data = res.data
+                        if (data.code === 1) {
+                            this.setState({
+                                errorMsg: data.msg
+                            })
+                        } else {
+                            this.setState({
+                                username: data.username,
+                                _id: data._id
+                            });
+                            this.props.history.push('./login')
+                        }
+
+                    })
             }
         });
     };
@@ -57,7 +78,7 @@ class RegistrationForm extends React.Component {
 
     render() {
         const { getFieldDecorator } = this.props.form;
-
+        const { errorMsg } = this.state
 
         const formItemLayout = {
             labelCol: {
@@ -84,19 +105,20 @@ class RegistrationForm extends React.Component {
 
         return (
             <div className='register-div'>
+                {errorMsg &&
+                    <div>
+                        <Alert
+                            message="Error"
+                            description={errorMsg}
+                            type="error"
+                            showIcon
+                        />
+                    </div>
+                }
                 <Form {...formItemLayout} onSubmit={this.handleSubmit}>
                     <Form.Item label="Username">
-                        {getFieldDecorator('Username', {
-                            rules: [
-                                {
-                                    type: 'email',
-                                    message: 'The input is not valid E-mail!',
-                                },
-                                {
-                                    required: true,
-                                    message: 'Please input your E-mail!',
-                                },
-                            ],
+                        {getFieldDecorator('username', {
+                            rules: [{ required: true, message: 'Please input your username!' }],
                         })(<Input />)}
                     </Form.Item>
                     <Form.Item label="Password" hasFeedback>
@@ -124,15 +146,6 @@ class RegistrationForm extends React.Component {
                                 },
                             ],
                         })(<Input.Password onBlur={this.handleConfirmBlur} />)}
-                    </Form.Item>
-                    <Form.Item {...tailFormItemLayout}>
-                        {getFieldDecorator('agreement', {
-                            valuePropName: 'checked',
-                        })(
-                            <Checkbox>
-                                I have read the <a href="">agreement</a>
-                            </Checkbox>,
-                        )}
                     </Form.Item>
                     <Form.Item {...tailFormItemLayout}>
                         <Button type="primary" htmlType="submit">
