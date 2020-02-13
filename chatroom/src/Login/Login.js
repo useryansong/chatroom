@@ -1,40 +1,61 @@
 import React from 'react'
 import {
-    Form,
-    Icon,
-    Input,
-    Button,
-    Checkbox,
+  Alert,
+  Form,
+  Icon,
+  Input,
+  Button,
+  Checkbox,
 } from 'antd'
 import axios from 'axios'
 
 import './Login.css'
 
 class Login extends React.Component {
-
-    handleSubmit = e => {
-      e.preventDefault();
-      this.props.form.validateFields((err, values) => {
-        if (!err) {
-          console.log('Received values of form: ', values);
-          const {username, password} = values;
-          console.log(username, password);
-          axios.post('/login', {username, password})
+  state = {
+    errorMsg: ''
+  }
+  handleSubmit = e => {
+    e.preventDefault();
+    this.props.form.validateFields((err, values) => {
+      if (!err) {
+        const { username, password } = values;
+        axios.post('/login', { username, password })
           .then(res => {
-            console.log(res);
-            console.log(res.data);
+            const data = res.data
+            if (data.code === 0) {
+              this.props.history.push('./main')
+            } else {
+              this.setState({
+                errorMsg: data.msg
+              });
+            }
           })
-        }
-      });
-    };
-    toRegister = () => {
-        this.props.history.replace('./register')
-    }
-    render() {
-      const { getFieldDecorator } = this.props.form;
-      return (
-        <div className='login-div'>   
-            <Form onSubmit={this.handleSubmit} className="login-form">
+      }
+    });
+  };
+
+  //click register, then move to register page
+  toRegister = () => {
+    this.props.history.replace('./register')
+  };
+
+  render() {
+    const { getFieldDecorator } = this.props.form;
+    const { errorMsg } = this.state;
+
+    return (
+      <div className='login-div'>
+        {/* if has errorMsg, show errorMsg */}
+        {errorMsg &&
+          <Alert
+            message="Error"
+            description={errorMsg}
+            type="error"
+            showIcon
+          />}
+        {/* login form */}
+        <Form onSubmit={this.handleSubmit} className="login-form">
           <Form.Item>
             {getFieldDecorator('username', {
               rules: [{ required: true, message: 'Please input your username!' }],
@@ -67,15 +88,15 @@ class Login extends React.Component {
             <Button type="primary" htmlType="submit" className="login-form-button">
               Log in
             </Button>
-            Or <Button type="link" onClick = {this.toRegister}>register now!</Button>
+            Or <Button type="link" onClick={this.toRegister}>register now!</Button>
           </Form.Item>
         </Form>
-        </div>
-        
-      );
-    }
+      </div>
+
+    );
   }
-  
+}
+
 const WrappedNormalLoginForm = Form.create({ name: 'normal_login' })(Login);
 
 export default WrappedNormalLoginForm

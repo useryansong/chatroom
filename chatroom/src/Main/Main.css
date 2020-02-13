@@ -1,0 +1,36 @@
+.outer {
+    height: 100vh;
+    background-color: #EDEDED;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.inner {
+    width: 80%;
+    height: 80%;
+    background-color: #fff;
+    padding: 0 10px;
+}
+
+.innerHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px 0;
+    border-top: 1px solid #EDEDED;
+}
+.roomName {
+    font-size: 25px;
+    font-weight: bold;
+}
+.chatroomDiv {
+    border: 1.5px solid rgb(59, 58, 58);
+    height: 70%;
+    margin: 5px 0;
+}
+.textouter{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}

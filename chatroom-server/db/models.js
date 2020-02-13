@@ -20,4 +20,15 @@ const userSchme = new mongoose.Schema({
 //define Model
 const User = mongoose.model('user', userSchme)
 
+//define chatSchema
+const chatSchema = new mongoose.Schema({
+  content: {type:String},
+  username: {type: String},
+  // create_time: {type: Number}
+});
+
+//define Model
+const Chat = mongoose.model('chat', chatSchema);
+
 exports.User = User
+exports.Chat = Chat
