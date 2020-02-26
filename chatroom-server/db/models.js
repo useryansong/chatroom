@@ -24,7 +24,7 @@ const User = mongoose.model('user', userSchme)
 const chatSchema = new mongoose.Schema({
   content: {type:String},
   username: {type: String},
-  // create_time: {type: Number}
+  create_time: {type: String}
 });
 
 //define Model

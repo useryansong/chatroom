@@ -50,10 +50,10 @@ router.get('/main', function(req, res) {
 //update chat messages
 
 router.post('/updateChat', function(req, res) {
-  const {username, content} = req.body
-  console.log(username,content)
+  const {username, content, create_time} = req.body
+  console.log(username,content, create_time)
   // const create_time = Data.now()
-  new Chat({username, content}).save(function (err, chat) {
+  new Chat({username, content, create_time}).save(function (err, chat) {
     if (err) {
       res.send({code:1, msg: err})
     } else {

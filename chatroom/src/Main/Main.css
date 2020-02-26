@@ -28,6 +28,7 @@
     border: 1.5px solid rgb(59, 58, 58);
     height: 70%;
     margin: 5px 0;
+    overflow: auto
 }
 .textouter{
     display: flex;

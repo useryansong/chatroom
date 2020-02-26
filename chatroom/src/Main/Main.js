@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Button, Input } from 'antd'
 import Cookies from 'js-cookie'
-import { Redirect } from 'react-router-dom'
+import { Redirect, useHistory } from 'react-router-dom'
 import axios from 'axios'
 
 import ChatItems from '../ChatItems/ChatItems'
@@ -11,8 +11,7 @@ const { TextArea } = Input
 const Main = () => {
     const [chatMsgs, setChatMsgs] = useState([]);
     const [content, setContent] = useState('')
-    console.log(chatMsgs)
-
+    let history = useHistory()
 
     useEffect(() => {
         axios.get('./main')
@@ -25,9 +24,44 @@ const Main = () => {
             })
     }, []);
 
+    const currentTime = () => {
+        let now = new Date();
+        let year = now.getFullYear();
+        let month = now.getMonth() + 1;
+        let day = now.getDate();
+
+        let hh = now.getHours();
+        let mm = now.getMinutes();
+        let ss = now.getSeconds();
+
+        let clock = year + '-';
+
+        if (month < 10)
+            clock += '0';
+
+        clock += month + "-";
+
+        if (day < 10)
+            clock += "0";
+
+        clock += day + " ";
+
+        if (hh < 10)
+            clock += "0";
+
+        clock += hh + ":";
+        if (mm < 10) clock += '0';
+        clock += mm + ":";
+
+        if (ss < 10) clock += '0';
+        clock += ss;
+        return (clock);
+    };
+
     const updateChat = () => {
         const username = Cookies.get('username');
-        axios.post('./updateChat', { username, content })
+        const create_time = currentTime();
+        axios.post('./updateChat', { username, content, create_time })
             .then(res => {
                 setContent('')
             })
@@ -35,6 +69,11 @@ const Main = () => {
 
     const onChange2 = (e) => {
         setContent(e.target.value)
+    };
+
+    const logOut = () => {
+        Cookies.remove('userid');
+        history.replace('./login')
     };
 
 
@@ -51,21 +90,21 @@ const Main = () => {
                         Chatroom
                     </div>
                     <div>
-                        <Button>Log Out</Button>
+                        <Button onClick={logOut}>Log Out</Button>
                     </div>
                 </div>
+                {/* display chat messages */}
                 <div className='chatroomDiv'>
-                    <ChatItems chatMsgs={chatMsgs}/>
+                    <ChatItems chatMsgs={chatMsgs} />
                 </div>
+                {/* input area */}
                 <div className='textouter'>
-
                     <TextArea
                         placeholder="Autosize height with minimum and maximum number of lines"
                         autoSize={{ minRows: 2, maxRows: 6 }}
                         value={content}
                         onChange={onChange2}
                     />
-
                     <Button type='primary' onClick={updateChat}>Send</Button>
                 </div>
             </div>
