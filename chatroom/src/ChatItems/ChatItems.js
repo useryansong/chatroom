@@ -1,13 +1,17 @@
 import React from 'react'
 
+import Cookies from 'js-cookie'
+
 const ChatItems = ({ chatMsgs }) => {
 
     return (
         <div>
             {chatMsgs.map((chatMsgs, index) => {
                 const { username, content, create_time } = chatMsgs
+                const username2 = Cookies.get('username');
                 return (
-                    <div key={index} style={styles.chatDiv}>
+                    // compare username of login and username of chatMsgs, if yes, bgc is green
+                    <div key={index} style={{margin:10, backgroundColor:(username===username2)? 'green':'none'}}>
                         <p style={styles.chatUsername}>{username}</p>
                         <p style={styles.chatContent}>{content}</p>
                         <p>{create_time}</p>
@@ -27,9 +31,6 @@ const styles = {
     },
     chatContent: {
         fontSize: 16
-    },
-    chatDiv: {
-        margin: 10
     }
 }
 
