@@ -8,7 +8,7 @@ import WrappedNormalLoginForm from './Login/Login'
 import WrappedRegistrationForm from './Register/Register'
 import Main from './Main/Main'
 
-
+// import './test/socketio_test'
 
 function App() {
 

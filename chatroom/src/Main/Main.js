@@ -4,8 +4,13 @@ import Cookies from 'js-cookie'
 import { Redirect, useHistory } from 'react-router-dom'
 import axios from 'axios'
 
+
+
 import ChatItems from '../ChatItems/ChatItems'
 import './Main.css'
+import io from 'socket.io-client'
+
+const socket = io('ws://localhost:4000')
 
 const { TextArea } = Input
 const Main = () => {
@@ -13,16 +18,14 @@ const Main = () => {
     const [content, setContent] = useState('')
     let history = useHistory()
 
+    
     useEffect(() => {
-        axios.get('./main')
-            .then(res => {
-                setChatMsgs(
-                    res.data.data.map(s => ({
-                        ...s
-                    }))
-                );
-            })
-    }, []);
+        socket.on('receiveMsg', function (data) {
+            setChatMsgs(chatMsgs.concat(data))
+        },[chatMsgs])
+    })
+
+
 
     const currentTime = () => {
         let now = new Date();
@@ -61,10 +64,13 @@ const Main = () => {
     const updateChat = () => {
         const username = Cookies.get('username');
         const create_time = currentTime();
-        axios.post('./updateChat', { username, content, create_time })
-            .then(res => {
-                setContent('')
-            })
+        // axios.post('./updateChat', { username, content, create_time })
+        //     .then(res => {
+        //         setContent('')
+        //     })
+        //send msg to server
+        socket.emit('sendMsg', {username, content, create_time});
+        setContent('')
     };
 
     const onChange2 = (e) => {
