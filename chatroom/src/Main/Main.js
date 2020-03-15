@@ -26,7 +26,7 @@ const Main = () => {
     })
 
 
-
+    //function of get current time
     const currentTime = () => {
         let now = new Date();
         let year = now.getFullYear();
@@ -61,20 +61,22 @@ const Main = () => {
         return (clock);
     };
 
+    //update chatroom msg
     const updateChat = () => {
-        const username = Cookies.get('username');
-        const create_time = currentTime();
-        // axios.post('./updateChat', { username, content, create_time })
-        //     .then(res => {
-        //         setContent('')
-        //     })
-        //send msg to server
-        socket.emit('sendMsg', {username, content, create_time});
-        setContent('')
+        //send msg, if content has value
+        if (content) {
+            const username = Cookies.get('username');
+            const create_time = currentTime();
+            socket.emit('sendMsg', {username, content, create_time});
+            setContent('')
+        }
     };
 
+    //obain textarea content
     const onChange2 = (e) => {
-        setContent(e.target.value)
+        if (e.target.value) {
+            setContent(e.target.value)
+        }
     };
 
     const logOut = () => {
